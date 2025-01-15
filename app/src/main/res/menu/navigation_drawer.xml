@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+            android:id="@+id/menu_switch_chain"
+            android:title=""
+            android:icon="@drawable/ic_flag_network"/>
+
+    <item
+            android:id="@+id/menu_accounts"
+            android:title="@string/nav_drawer_accounts"
+            android:icon="@drawable/ic_group_black_24dp"/>
+
+    <item
+            android:id="@+id/menu_settings"
+            android:title="@string/nav_drawer_preferences"
+            android:icon="@drawable/ic_action_settings"/>
+
+    <item
+            android:id="@+id/menu_offline_transaction"
+            android:title="@string/offline_transaction"
+            android:icon="@drawable/ic_enhanced_encryption_black_24dp"/>
+
+    <item
+            android:id="@+id/menu_walletconnect"
+            android:title="@string/wallet_connect"
+            android:icon="@drawable/ic_walletconnect_logo"/>
+
+    <item
+            android:id="@+id/menu_debug"
+            android:title="@string/debug"
+            android:icon="@drawable/ic_adb_black_24dp"/>
+
+    <item
+            android:id="@+id/menu_security"
+            android:title="@string/security_privacy_label"
+            android:icon="@drawable/ic_security_black_24dp"/>
+
+</menu>

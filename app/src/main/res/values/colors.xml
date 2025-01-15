@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#388E3C</color>
+    <color name="colorInitialToolbar">#eeeeee</color>
+    <color name="colorSecondary">#388E3C</color>
+    <color name="colorAccent">#388E3C</color>
+
+    <color name="onAccent">@android:color/black</color>
+
+    <color name="warning">#ffcc0000</color>
+    <color name="textColor">?android:attr/textColorPrimary</color>
+    <color name="fgColor">@android:color/black</color>
+</resources>

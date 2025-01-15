@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        app:cardMaxElevation="8dp">
+
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/token_starred_button"
+                style="@style/button"
+                tools:src="@drawable/ic_star_border_24dp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/delete_button"
+                style="@style/button"
+                android:layout_below="@id/token_starred_button"
+                app:srcCompat="@drawable/ic_delete_24dp" />
+
+        <TextView
+                android:id="@+id/token_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/token_starred_button"
+                android:paddingLeft="8dp"
+
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                app:fontFamily="sans-serif"
+                tools:text="Etheraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
+
+        <TextView
+                android:id="@+id/token_chain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/token_name"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@id/token_starred_button"
+                android:paddingLeft="8dp"
+                app:fontFamily="sans-serif"
+                tools:text="18" />
+
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

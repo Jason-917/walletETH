@@ -1,0 +1,293 @@
+def isCI = hasProperty("isCI")
+def isLightCI = hasProperty("isLightCI")
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'de.mobilej.unmock'
+apply plugin: "com.jaredsburrows.license"
+apply plugin: 'app.cash.exhaustive'
+
+android {
+    compileSdkVersion 30
+
+    defaultConfig {
+        applicationId "org.walleth"
+
+        minSdkVersion 16
+        targetSdkVersion 30
+
+        versionCode 514
+        versionName "0.51.4"
+        archivesBaseName = "WallETH-$versionName"
+
+        testInstrumentationRunner "org.walleth.infrastructure.AppReplacingRunner"
+        vectorDrawables.useSupportLibrary = true
+
+        multiDexEnabled true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        warning 'InvalidPackage' // for OKIO
+        warning 'MissingTranslation'
+    }
+
+    flavorDimensions "geth", "store", "connectivity"
+
+    productFlavors {
+        withGeth {
+            dimension "geth"
+        }
+
+        noGeth {
+            dimension "geth"
+            isDefault = true
+        }
+
+        forFDroid {
+            dimension "store"
+            buildConfigField 'String', 'STORE', '"fdroid"'
+            isDefault = true
+        }
+
+        forAmazon {
+            dimension "store"
+            buildConfigField 'String', 'STORE', '"amazon"'
+        }
+
+        forPlay {
+            dimension "store"
+            buildConfigField 'String', 'STORE', '"play"'
+        }
+
+        online {
+            dimension "connectivity"
+            isDefault = true
+        }
+
+        offline {
+            dimension "connectivity"
+            applicationIdSuffix ".offline"
+        }
+
+    }
+
+    applicationVariants.all { variant ->
+        variant.resValue "string", "package_name", "${variant.properties.applicationId}"
+    }
+
+    android.variantFilter { variant ->
+        def geth = variant.getFlavors().get(0).name
+        def store = variant.getFlavors().get(1).name
+        def connectivity = variant.getFlavors().get(2).name
+
+        if ((project.hasProperty("singleFlavor") && (store != 'forFDroid'))
+                || (connectivity == 'offline' && geth == 'withGeth')) {
+            variant.setIgnore(true)
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    packagingOptions {
+        exclude 'META-INF/main.kotlin_module'
+        exclude 'META-INF/lib_release.kotlin_module'
+
+        pickFirst 'META-INF/extensions.kotlin_module'
+        pickFirst 'META-INF/kotlinx-io.kotlin_module'
+        pickFirst 'META-INF/atomicfu.kotlin_module'
+        pickFirst 'META-INF/kotlinx-coroutines-io.kotlin_module'
+        pickFirst 'META-INF/lib_release.kotlin_module'
+    }
+
+    // For Kotlin projects
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
+    implementation 'androidx.multidex:multidex:2.0.1'
+    androidTestImplementation 'androidx.multidex:multidex:2.0.1'
+    androidTestImplementation 'androidx.multidex:multidex-instrumentation:2.0.0'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    withGethImplementation "org.ethereum:geth:1.8.8"
+
+    implementation 'androidx.paging:paging-runtime-ktx:3.0.1'
+
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+
+    implementation "com.github.komputing.kethereum:abi:$kethereum_version"
+    implementation "com.github.komputing.kethereum:abi_filter:$kethereum_version"
+    implementation "com.github.komputing.kethereum:model:$kethereum_version"
+    implementation "com.github.komputing.kethereum:crypto:$kethereum_version"
+    implementation "com.github.komputing.kethereum:bip32:$kethereum_version"
+    implementation "com.github.komputing.kethereum:bip39:$kethereum_version"
+    implementation "com.github.komputing.kethereum:bip39_wordlist_en:$kethereum_version"
+
+    implementation "com.github.komputing.kethereum:blockscout:$kethereum_version"
+    implementation "com.github.komputing.kethereum:etherscan:$kethereum_version"
+
+    implementation "com.github.komputing.kethereum:ens:$kethereum_version"
+    implementation "com.github.komputing.kethereum:erc20:$kethereum_version"
+    implementation "com.github.komputing.kethereum:erc55:$kethereum_version"
+    implementation "com.github.komputing.kethereum:eip137:$kethereum_version"
+    implementation "com.github.komputing.kethereum:eip155:$kethereum_version"
+    implementation "com.github.komputing.kethereum:eip191:$kethereum_version"
+    implementation "com.github.komputing.kethereum:erc681:$kethereum_version"
+    implementation "com.github.komputing.kethereum:erc712:$kethereum_version"
+    implementation "com.github.komputing.kethereum:erc831:$kethereum_version"
+    implementation "com.github.komputing.kethereum:erc1328:$kethereum_version"
+    implementation "com.github.komputing.kethereum:extensions_kotlin:$kethereum_version"
+    implementation "com.github.komputing.kethereum:extensions_transactions:$kethereum_version"
+    implementation "com.github.komputing.kethereum:keccak_shortcut:$kethereum_version"
+    implementation "com.github.komputing.kethereum:method_signatures:$kethereum_version"
+    implementation "com.github.komputing.kethereum:etherscan:$kethereum_version"
+    implementation "com.github.komputing.kethereum:rlp:$kethereum_version"
+    implementation "com.github.komputing.kethereum:rpc:$kethereum_version"
+    implementation "com.github.komputing.kethereum:rpc_min3:$kethereum_version"
+    implementation "com.github.komputing.kethereum:wallet:$kethereum_version"
+    implementation "com.github.komputing.kethereum:types:$kethereum_version"
+    implementation "com.github.komputing.kethereum:keystore:$kethereum_version"
+    implementation "com.github.komputing.kethereum:metadata:$kethereum_version"
+    implementation "com.github.komputing.kethereum:metadata_model:$kethereum_version"
+    implementation "com.github.komputing.kethereum:metadata_repo:$kethereum_version"
+
+    implementation "androidx.fragment:fragment-ktx:1.3.6"
+
+    implementation "com.github.komputing:kbip44:0.5"
+
+    implementation "org.bouncycastle:bcprov-jdk15to18:1.69"
+
+    implementation "com.github.komputing:khex:1.1.2"
+
+    implementation "com.github.walleth:KHardWareWallet:1.0.0"
+    implementation 'com.squareup.okio:okio:3.0.0'
+
+    implementation "com.github.komputing.kethereum:crypto_impl_bouncycastle:$kethereum_version"
+
+    implementation "com.github.walletconnect:kotlin-walletconnect-lib:0.9.8"
+    implementation 'com.github.ligi:circular-with-floating-action-button:androidX_v2.0'
+
+    implementation 'com.github.deano2390:MaterialShowcaseView:1.3.4'
+
+    implementation 'com.github.ligi.tracedroid:lib:4.1'
+    implementation 'com.github.ligi.tracedroid:supportemail:4.1'
+
+    implementation 'com.github.ligi:KAXT:1.0'
+
+    implementation 'com.github.ligi:KAXTUI:1.0'
+    implementation 'com.github.ligi:thirdpartylicensedisplay:1.0'
+
+    implementation 'com.github.ligi:tsnackbar:android_x_fork_1.0'
+
+    implementation 'com.github.kenglxn.QRGen:android:2.6.0'
+
+    // Do not update to 3.4.0 - breaks old devices: https://github.com/walleth/walleth/issues/382
+    implementation 'com.google.zxing:core:3.3.3'
+
+    implementation "io.coil-kt:coil:1.4.0"
+    implementation 'com.jakewharton:process-phoenix:2.1.2'
+
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.3.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
+
+    implementation "io.insert-koin:koin-android:$koin_version"
+
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation "com.chibatching.kotpref:kotpref:2.13.1"
+    implementation "com.chibatching.kotpref:enum-support:2.13.1"
+
+    implementation 'com.squareup.moshi:moshi:1.8.0'
+
+    implementation 'com.github.ligi:ExtraCompats:1.0'
+
+    implementation 'androidx.preference:preference:1.1.1'
+
+    implementation 'com.github.ligi:rootbeer:remove_native_workaround'
+
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+
+    // Kotlin + coroutines
+    implementation 'androidx.work:work-runtime-ktx:2.6.0'
+
+    implementation 'com.github.madrapps:pikolo:2.0.2'
+
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+
+    kapt "androidx.room:room-compiler:$room_version"
+
+    implementation 'com.github.tingyik90:snackprogressbar:6.4.2'
+
+    androidTestImplementation "com.google.truth:truth:$truth"
+
+    testImplementation "org.mockito:mockito-core:$mockito_version"
+
+    androidTestImplementation "org.mockito:mockito-core:$mockito_version"
+
+    androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.28.1'
+
+
+    androidTestImplementation "androidx.test.espresso:espresso-intents:$espresso_version"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
+
+    androidTestImplementation 'com.github.ligi:trulesk:4.3'
+    androidTestUtil 'com.linkedin.testbutler:test-butler-app:2.2.1'
+    androidTestImplementation 'com.linkedin.testbutler:test-butler-library:2.2.1'
+
+    androidTestImplementation 'com.jraska:falcon:2.2.0'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation "com.google.truth:truth:$truth"
+    testImplementation 'org.threeten:threetenbp:1.5.1'
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+    implementation 'com.squareup.leakcanary:plumber-android:2.7'
+
+}
+
+if (isCI || isLightCI) {
+
+    apply plugin: 'com.trevjonez.composer'
+    composer {
+        apkInstallTimeout 600
+    }
+}
+
+licenseReport {
+    generateHtmlReport = false
+    generateJsonReport = true
+
+    copyJsonReportToAssets = true
+}
+
+androidExtensions {
+    experimental = true
+}

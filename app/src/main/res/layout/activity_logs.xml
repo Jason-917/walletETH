@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+
+        android:layout_height="match_parent"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:context=".debug.DebugWallethActivity">
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/log_rpc_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log node RPC requests/responses" />
+
+
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/log_refresh_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/refresh" />
+
+
+
+    <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/max_log_lines"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="max lines"
+            android:inputType="number"
+            android:text="100" />
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <TextView
+                android:id="@+id/log_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                app:fontFamily="sans-serif" />
+    </ScrollView>
+
+
+</LinearLayout>

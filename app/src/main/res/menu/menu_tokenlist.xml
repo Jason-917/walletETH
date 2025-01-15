@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:icon="@drawable/ic_filter_list_black_24dp"
+          android:title="@string/menu_filter"
+          app:showAsAction="ifRoom|withText">
+        <menu>
+            <item android:id="@+id/menu_stared_only"
+                  android:icon="@drawable/ic_star_24dp"
+                  app:iconTint="@color/fgColor"
+                  android:title="@string/menu_has_star"
+                  android:checkable="true"
+            />
+            <item android:id="@+id/menu_current_network_only"
+                  android:icon="@drawable/ic_flag_network"
+                  app:iconTint="@color/fgColor"
+                  android:title="@string/menu_current_chain"
+                  android:checkable="true"/>
+        </menu>
+    </item>
+</menu>
